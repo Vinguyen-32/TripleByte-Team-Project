@@ -106,16 +106,24 @@ public class CalendarView extends JPanel implements ChangeListener{
 		for(int i = 1; i <= currentDate.getMonth().maxLength(); i++) {
 			JLabel label = new CalendarDate("" + i);
 			label.setHorizontalAlignment(JLabel.CENTER);
-		    label.setVerticalAlignment(JLabel.CENTER);    	    
+		    label.setVerticalAlignment(JLabel.CENTER);   
 		    if(
-	    		i == currentDate.getDayOfMonth() && 
+	    		i == today.getDayOfMonth() && 
 	    		currentDate.getMonth().getValue() == today.getMonth().getValue() &&
 	    		currentDate.getYear() == today.getYear()
 		    ) {
 		    	Border border = BorderFactory.createLineBorder(Color.gray, 2);
 		    	label.setBorder(border);
+		    	label.setBackground(Color.GRAY);
+		    	label.setOpaque(true);
+		    	
+		    }
+		    else if(i == currentDate.getDayOfMonth()) {
+//		    	Border border = BorderFactory.createLineBorder(Color.gray, 2);
+//		    	label.setBorder(border);
 		    	label.setBackground(Color.LIGHT_GRAY);
 		    	label.setOpaque(true);
+		    	
 		    }
 		    calendarSection.add(label);
 		}
@@ -129,6 +137,8 @@ public class CalendarView extends JPanel implements ChangeListener{
 			calendarSection.add(label);
 			
 		}
+		revalidate();
+		repaint();
 	}
 	private void getData() {
 		currentDate = model.getCurrentDate();
@@ -142,7 +152,6 @@ public class CalendarView extends JPanel implements ChangeListener{
 		
 		getData();
 		render();
-		
 		// Unlock buttons
 		rightNav.setEnabled(true);
 		leftNav.setEnabled(true);
