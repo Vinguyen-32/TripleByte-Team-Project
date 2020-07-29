@@ -161,16 +161,12 @@ public class CalendarView extends JPanel implements ChangeListener{
 					JLabel l = (JLabel)e.getSource();
 					Border border = BorderFactory.createLineBorder(new Color(0xDB7093), 2);
 			    	l.setBorder(border);
-//			    	label.setBackground(Color.LIGHT_GRAY);
-//			    	label.setOpaque(true);
 				}
 
 				@Override
 				public void mouseExited(MouseEvent e) {
 					JLabel l = (JLabel)e.getSource();
-//					Border border = BorderFactory.createLineBorder(Color.blue, 2);
 			    	l.setBorder(null);
-					
 				}
 		    	
 		    });
