@@ -2,19 +2,25 @@ package calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,9 +29,10 @@ public class CalendarView extends JPanel implements ChangeListener{
 	private JPanel navigationSection;
 	private JPanel calendarSection;	
 	private LocalDate currentDate;
-	private LocalDate viewDate;
 	private LocalDate today;
+	private LocalDate viewDate;
 	private JLabel text;
+	private JLabel dateTime;
 	private Model model;
 	private Controller controller;
 	
@@ -40,37 +47,95 @@ public class CalendarView extends JPanel implements ChangeListener{
 		
 		this.model = model;
 		this.controller = controller;
+		JPanel secondNavigationPanel = new JPanel();
+		JPanel navBox2 = new JPanel();
+		DateNavigator todayButton = new DateNavigator("Today");
+		
+		
+		DateNavigator leftNav2 = new DateNavigator("<");
+		DateNavigator rightNav2 = new DateNavigator(">");
+		leftNav2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//default day view, yesterday
+				controller.decreaseDay(1);
+			}	
+		});
+		
+		rightNav2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//default day view nextday
+				controller.increaseDay(1);
+			}	
+		});	
+		
+		/*
+		JButton createButton = new JButton("Create Event");
+	//	createButton.setPreferredSize(new Dimension());
+		JTextField tf = new JTextField("EVENT");
+		createButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				JOptionPane.showInputDialog("ENTER EVENT NAME: ");
+				 JOptionPane.showInputDialog(tf.getText());
+			}
+			
+		});
+		*/
+		
+		navBox2.add(leftNav2, BorderLayout.WEST);
+		navBox2.add(todayButton, BorderLayout.CENTER);
+		navBox2.add(rightNav2, BorderLayout.EAST);
+	//	navBox2.add(createButton);
+		
 		
 		navigationSection = new JPanel();
 		setLayout(new BorderLayout());
 		text = new JLabel();
 		
+		//displays today's date and time
+		dateTime = new JLabel();
+		dateTime.setText(DateFormat.getDateTimeInstance().format(new Date()));
+		
+		
+		
 		JPanel navBox = new JPanel();
 		navBox.setLayout(new BorderLayout());
-		leftNav = new MonthNavigator("<"); 
+		leftNav = new MonthNavigator("<<"); 
 		leftNav.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.decreaseViewDateMonth(1);
+				controller.decreaseMonth(1);
 			}	
 		});
-		rightNav = new MonthNavigator(">");
+		rightNav = new MonthNavigator(">>");
 		rightNav.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.increaseViewDateMonth(1);
+				controller.increaseMonth(1);
 			}	
 		});
-		navBox.add(leftNav, BorderLayout.WEST);
-		navBox.add(rightNav, BorderLayout.EAST);
+		//navBox.add(leftNav, BorderLayout.WEST);
+		//navBox.add(rightNav, BorderLayout.EAST);
 		
-		navigationSection.add(text, BorderLayout.WEST);
-		navigationSection.add(navBox, BorderLayout.EAST);
+		navigationSection.setLayout(new GridLayout(2,1));
+		navigationSection.add(navBox2,BorderLayout.CENTER);
+		navigationSection.add(secondNavigationPanel);
+		
+		
+		secondNavigationPanel.add(leftNav,BorderLayout.WEST);
+		secondNavigationPanel.add(text,BorderLayout.CENTER);
+		secondNavigationPanel.add(rightNav,BorderLayout.EAST);
+		//secondNavigationPanel.add(navBox, BorderLayout.EAST);
+		//secondNavigationPanel.add(dateTime);
 		
 		
 		calendarSection = new JPanel();
 		calendarSection.setLayout(new GridLayout(7, 7));
-		
+		 
 		
 		add(navigationSection, BorderLayout.NORTH);
 		add(calendarSection, BorderLayout.CENTER);
@@ -161,12 +226,16 @@ public class CalendarView extends JPanel implements ChangeListener{
 					JLabel l = (JLabel)e.getSource();
 					Border border = BorderFactory.createLineBorder(new Color(0xDB7093), 2);
 			    	l.setBorder(border);
+//			    	label.setBackground(Color.LIGHT_GRAY);
+//			    	label.setOpaque(true);
 				}
 
 				@Override
 				public void mouseExited(MouseEvent e) {
 					JLabel l = (JLabel)e.getSource();
+//					Border border = BorderFactory.createLineBorder(Color.blue, 2);
 			    	l.setBorder(null);
+					
 				}
 		    	
 		    });
@@ -186,6 +255,7 @@ public class CalendarView extends JPanel implements ChangeListener{
 		revalidate();
 		repaint();
 	}
+
 	private void getData() {
 		currentDate = model.getCurrentDate();
 		today = model.getToday();
@@ -199,6 +269,7 @@ public class CalendarView extends JPanel implements ChangeListener{
 		
 		getData();
 		render();
+		
 		// Unlock buttons
 		rightNav.setEnabled(true);
 		leftNav.setEnabled(true);

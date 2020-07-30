@@ -45,7 +45,4 @@ public class Controller {
 		LocalDate viewDate = model.getViewDate();
 		model.setViewDate(viewDate.minusMonths(amount));
 	}
-	public void setViewMode(String mode) {
-		model.setViewMode(mode);
-	}
 }
