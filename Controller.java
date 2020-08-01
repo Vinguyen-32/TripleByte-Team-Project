@@ -45,4 +45,10 @@ public class Controller {
 		LocalDate viewDate = model.getViewDate();
 		model.setViewDate(viewDate.minusMonths(amount));
 	}
+	
+	public void addOneTime(LocalDate dateKey, Event dateTime)
+	{
+		model.addOneTime(dateKey, dateTime);
+	}
+	
 }
