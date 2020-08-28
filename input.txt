@@ -1,0 +1,10 @@
+Math Class;2020;1;5;MWF;9;11;
+Engligh Class;2020;1;5;MW;13;15;
+Algorithm & Data Structure Class;2020;6;8;TH;12;14;
+Object Oriented Class;2020;6;8;TH;9;11;
+Software Design I Class;2020;8;12;TH;14;16;
+Assembly Language Class;2020;8;12;MW;13;16;
+Internship;2021;4;12;WH;8;14;
+Dance Class;2021;1;3;AS;1;5;
+Security Class;2020;8;12;TH;18;20;
+Probability Math Class;2020;8;12;MWF;10;12;

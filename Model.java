@@ -1,81 +1,142 @@
-
-package calendar;
-
+/**
+ * Project Solution
+ * @author Team TripleByte
+ * @version 1.0
+ * @copyright TripleByte Team-Project-CS151-SJSU 
+ */
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.*;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
+/**
+ * The main Model class to get, set stage of variable and update them
+ */
 public class Model {
-	private LocalDate viewDate;
-	private LocalDate currentDate;
+	private LocalDate currentDate; // Selected date
 	private LocalDate today;
-	private Map<LocalDate, ArrayList<Event>> oneTime;
-	private Map<String, ArrayList<Event>> recurringTime;
+	private LocalDate viewDate; // The date of the rendered calendar
+	private String viewMode;
 	private ArrayList<ChangeListener> listeners;
-	
+	private ArrayList<Event> events;
+	/**
+	 * Model constructor
+	 * @param currentDate
+	 * @param today
+	 */
 	public Model(LocalDate currentDate, LocalDate today) {
 		listeners = new ArrayList<ChangeListener>();
-		this.oneTime = new HashMap<LocalDate, ArrayList<Event>>();
-		this.recurringTime = new HashMap<String, ArrayList<Event>>();
-		String days = "S/M/T/W/H/F/A";
-		String[] daySplit = days.split("/", 7);
-		for(int i = 0; i < 7; i++)
-		{
-			recurringTime.put(daySplit[i], new ArrayList<Event>());
-		}
-		this.viewDate = currentDate;
+		events = new ArrayList<Event>();
 		this.currentDate = currentDate;
 		this.today = today;
+		this.viewDate = currentDate;
+		viewMode = "DAY"; // Possible values: DAY, WEEK, MONTH, AGENDA
 	}
-	
-	public LocalDate getViewDate() {
-		return viewDate;
+	/**
+	 * To get the view mode
+	 * @return the view mode
+	 */
+	public String getViewMode() {
+		return viewMode;
 	}
-	
+	/**
+	 * To get the currentDate
+	 * @return the current date 
+	 */
 	public LocalDate getCurrentDate() {
 		return currentDate;
 	}
-
+	/**
+	 * To get today date
+	 * @return today 
+	 */
 	public LocalDate getToday() {
 		return today;
 	}
-	
+	/**
+	 * To get the view date
+	 * @return the view date that is selected 
+	 */
+	public LocalDate getViewDate() {
+		return viewDate;
+	}
+	/**
+	 * To get the list of scheduled events 
+	 * @return a list of events
+	 */
+	public ArrayList<Event> getEvents() {
+		return events;
+	}
+	/**
+	 * To set the view mode and update it simultaneously
+	 * @param viewMode viewMode that users want to see
+	 */
+	public void setViewMode(String viewMode) {
+		this.viewMode = viewMode;
+		System.out.println(viewMode);
+		update();
+	}
+	/**
+	 * To set the viewDate and updates it
+	 * @param viewDate
+	 */
 	public void setViewDate(LocalDate viewDate) {
 		this.viewDate = viewDate;
 		update();
 	}
-	
-	public Map<LocalDate, ArrayList<Event>> getOneTime() {
-		return oneTime;
-	}
+	/**
+	 * To set the currentDate and updates it
+	 * @param currentDate
+	 */
 	public void setCurrentDate(LocalDate currentDate) {
 		this.currentDate = currentDate;
 		this.viewDate = currentDate;
 		update();
 	}
-	
-	public void addOneTime(LocalDate dateKey, Event dateTime) {
-		if(oneTime.get(dateKey) == null)
-		{
-			oneTime.put(dateKey, new ArrayList<Event>());
-		}
-		oneTime.get(dateKey).add(dateTime);
-		update();
-	}
-	
-	public void recTime(String dateKey, Event dateTime) {
-		recurringTime.get(dateKey).add(dateTime);
-		update();
-	}
-	
+	/**
+	 * To attach a ChangeListener
+	 * @param c
+	 */
 	public void attach(ChangeListener c){
 		listeners.add(c);
     }
-
+	/**
+	 * To add events to the list of events already scheduled
+	 * @param newEvents
+	 */
+	public void addEvents(ArrayList<Event> newEvents) {
+		for (int i = 0; i < newEvents.size(); i++) {
+			boolean overlapped = false;
+			Event newEvent = newEvents.get(i);
+			for (int j = 0; j < events.size(); j++) {
+				if (events.get(j).isOverlapped(newEvent)) {
+					overlapped = true;
+					break;
+				}
+			}
+			
+			if (!overlapped) {
+				events.add(newEvent);
+			}
+		}
+		update();
+	}
+	/**
+	 * To check if the events are overlapped
+	 * @param newEvent
+	 * @return true or false
+	 */
+	public boolean hasOverlapped(Event newEvent) {
+		boolean overlapped = false;
+		for (int j = 0; j < events.size(); j++) {
+			if (events.get(j).isOverlapped(newEvent)) {
+				overlapped = true;
+				break;
+			}
+		}
+		return overlapped;
+	}
+	
    /**
     * Notify views of the changes
    */
